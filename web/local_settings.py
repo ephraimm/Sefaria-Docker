@@ -2,6 +2,7 @@
 # copy this file to sefaria/local_settings.py and provide local info to run.
 import os.path
 from datetime import timedelta
+import sys
 relative_to_abs_path = lambda *x: os.path.join(os.path.dirname(
                                os.path.realpath(__file__)), *x)
 import structlog
@@ -128,6 +129,11 @@ GLOBAL_INTERRUPTING_MESSAGE = {
 }
 """
 
+# Location of Strapi CMS instance
+# For local development, Strapi is located at http://localhost:1337 by default
+STRAPI_LOCATION = 'localhost'
+STRAPI_PORT = 1337
+
 
 MANAGERS = ADMINS
 
@@ -144,6 +150,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # ANYMAIL = {
 #    "MANDRILL_API_KEY": "your api key",
 # }
+MONGO_REPLICASET_NAME = None # If the below is a list, this should be set to something other than None. 
 
 MONGO_HOST = "mongo"
 MONGO_PORT = 27017
@@ -154,17 +161,20 @@ SEFARIA_DB_USER = ''
 SEFARIA_DB_PASSWORD = ''
 APSCHEDULER_NAME = "apscheduler"
 
+
+
 # ElasticSearch server
-SEARCH_HOST = "http://localhost:9200"
-SEARCH_ADMIN = "http://localhost:9200"
-SEARCH_ADMIN_USER = None  # if not None, use these credentials to access SEARCH_ADMIN
-SEARCH_ADMIN_PW = None
-SEARCH_ADMIN_K8S = "http://localhost:9200"
+# URL to connect to ES server.
+# Set this to https://sefaria.org/api/search to connect to production search.
+# If ElasticSearch server has a password use the following format: http(s)://{username}:{password}@{base_url}
+SEARCH_URL = "http://localhost:9200"
+
 SEARCH_INDEX_ON_SAVE = False  # Whether to send texts and source sheet to Search Host for indexing after save
-SEARCH_INDEX_NAME = 'sefaria'
 SEARCH_INDEX_NAME_TEXT = 'text'  # name of the ElasticSearch index to use
 SEARCH_INDEX_NAME_SHEET = 'sheet'
-SEARCH_INDEX_NAME_MERGED = 'merged'
+
+
+
 
 # Node Server
 USE_NODE = False
@@ -178,16 +188,26 @@ SEFARIA_EXPORT_PATH = '/path/to/your/Sefaria-Data/export' # used for exporting t
 # DafRoulette server
 RTC_SERVER = '' # Root URL/IP of the server
 
+GOOGLE_GTAG = 'your gtag id here'
 GOOGLE_TAG_MANAGER_CODE = 'you tag manager code here'
 
 HOTJAR_ID = None
 
+
+# Determine which CRM connection implementations to use
+CRM_TYPE = "NONE"  # "SALESFORCE" || "NATIONBUILDER" || "NONE"
+
+
 # Integration with a NationBuilder list
-NATIONBUILDER = False
 NATIONBUILDER_SLUG = ""
 NATIONBUILDER_TOKEN = ""
 NATIONBUILDER_CLIENT_ID = ""
 NATIONBUILDER_CLIENT_SECRET = ""
+
+# Integration with Salesforce
+SALESFORCE_BASE_URL = ""
+SALESFORCE_CLIENT_ID = ""
+SALESFORCE_CLIENT_SECRET = ""
 
 # Issue bans to Varnish on update.
 USE_VARNISH = False
@@ -201,7 +221,7 @@ USE_VARNISH_ESI = False
 
 # Prevent modification of Index records
 DISABLE_INDEX_SAVE = False
-DISABLE_AUTOCOMPLETER = False
+DISABLE_AUTOCOMPLETER = True
 
 # Caching with Cloudflare
 CLOUDFLARE_ZONE = ""
@@ -303,3 +323,12 @@ structlog.configure(
 
 # not sure what this should be: FIXME
 PARTNER_GROUP_EMAIL_PATTERN_LOOKUP_FILE = ''
+
+SENTRY_DSN = None
+CLIENT_SENTRY_DSN = None
+
+# Fail gracefully when decorator conditional_graceful_exception on function. This should be set to True on production
+# Example: If a text or ref cannot be properly loaded, fail gracefully and let the server continue to run
+FAIL_GRACEFULLY = False
+if "pytest" in sys.modules:
+    FAIL_GRACEFULLY = False
