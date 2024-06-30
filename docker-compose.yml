@@ -13,6 +13,7 @@ services:
       context: web/
     volumes:
             - ./web/local_settings.py:/www/sefaria/local_settings.py
+            - ./web/config:/www/sefaria/config
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
