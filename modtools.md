@@ -1,6 +1,8 @@
 # Moderator Tools
 
- https://developers.sefaria.org/docs/local-installation-instructions#run-with-docker-compose
+ ( the instructions in https://developers.sefaria.org/docs/local-installation-instructions#run-with-docker-compose  need some changes to configuration to get this up and running locally, I'd recommend rather cloning:
+
+ 
 
 In order to access moderatortools `http://localhost:8000/modtools` while running a local instance or via docker, you need to setup a Django staff account.
 
