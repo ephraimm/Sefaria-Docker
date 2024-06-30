@@ -1,3 +1,5 @@
 web/Sefaria-Project
 mongo/dump
 mongo/dump_small.tar.gz
+web/config/google_service_account_credentials.json
+web/local_settings.py
